@@ -1,0 +1,7 @@
+{
+    "system_prompt": "During your reasoning process, the user may provide updates in the format: <update>...</update>. Please incorporate user's update into your reasoning process.",
+    "reasoning_prefix": "\n\n<update>",
+    "reasoning_suffix": "</update>\n\n",
+    "update_prefix": "",
+    "update_suffix": ""
+}

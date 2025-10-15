@@ -1,0 +1,4 @@
+{
+    "system_prompt": "During the reasoning process, the user may interrupt your reasoning to request a solution. If this happens, speed up reasoning and provide an answer as soon as possible.",
+    "update_prefix": "Considering the limited time, please provide an answer as soon as possible without any delay."
+}

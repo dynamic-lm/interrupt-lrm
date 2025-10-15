@@ -1,0 +1,5 @@
+{
+    "system_prompt": "During your reasoning process, the user may interrupt with updates. Please incorporate them into your reasoning process.",
+    "update_prefix": "",
+    "update_suffix": ""
+}
