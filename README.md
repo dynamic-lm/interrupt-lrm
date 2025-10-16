@@ -2,11 +2,11 @@
 
 <img src="images/logo.png" alt="Interrupt-LRM logo" width="250">
 
-**Paper:** [Are Large Reasoning Models Interruptible?]()
+**Paper:** [Are Large Reasoning Models Interruptible?](https://arxiv.org/abs/2510.11713)
 
 **Authors:** Tsung-Han Wu*, Mihran Miroyan*, David M. Chan, Trevor Darrell, Narges Norouzi, Joseph E. Gonzalez
 
-**Additional resources:** [🤗 Dataset](), [Blog post]()
+**Additional resources:** [🤗 Dataset](https://huggingface.co/datasets/dynamic-lm/update-interrupt-benchmark), [Blog post]()
 
 ### Abstract
 
