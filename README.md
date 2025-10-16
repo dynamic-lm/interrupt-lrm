@@ -6,7 +6,7 @@
 
 **Authors:** Tsung-Han Wu*, Mihran Miroyan*, David M. Chan, Trevor Darrell, Narges Norouzi, Joseph E. Gonzalez
 
-**Additional resources:** [🤗 Dataset](https://huggingface.co/datasets/dynamic-lm/update-interrupt-benchmark), [Blog post]()
+**Additional resources:** [🤗 Dataset](https://huggingface.co/datasets/dynamic-lm/update-interrupt-benchmark), [💻 Project page](https://dynamic-lm.github.io/)
 
 ### Abstract
 
@@ -146,10 +146,13 @@ Arguments:
 ## Citation
 
 ```
-@misc{wu2025interruptible,
-  title={Are Large Reasoning Models Interruptible?},
-  author={Wu, Tsung-Han and Miroyan, Mihran and Chan, David M and Darrell, Trevor and Norouzi, Narges and Gonzalez, Joseph E},
-  note={Project page},
-  year={2025}
+@misc{wu2025largereasoningmodelsinterruptible,
+      title={Are Large Reasoning Models Interruptible?}, 
+      author={Tsung-Han Wu and Mihran Miroyan and David M. Chan and Trevor Darrell and Narges Norouzi and Joseph E. Gonzalez},
+      year={2025},
+      eprint={2510.11713},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL},
+      url={https://arxiv.org/abs/2510.11713}, 
 }
 ```
