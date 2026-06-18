@@ -23,6 +23,12 @@ MISTRAL_TEMPERATURE=0.7
 MISTRAL_TOP_P=0.95
 MISTRAL_TOP_K=20
 
+# Nemotron specific parameters
+NEMOTRON_MAX_TOKENS=131072
+NEMOTRON_TEMPERATURE=0.6
+NEMOTRON_TOP_P=0.95
+NEMOTRON_TOP_K=20
+
 export RUST_LOG="error"
 export VLLM_LOGGING_LEVEL=ERROR
 export TRANSFORMERS_VERBOSITY=error
@@ -229,4 +235,8 @@ get_gptoss_params() {
 
 get_mistral_params() {
     echo "--temperature ${MISTRAL_TEMPERATURE} --top_p ${MISTRAL_TOP_P} --top_k ${MISTRAL_TOP_K} --max_tokens ${MISTRAL_MAX_TOKENS}"
+}
+
+get_nemotron_params() {
+    echo "--temperature ${NEMOTRON_TEMPERATURE} --top_p ${NEMOTRON_TOP_P} --top_k ${NEMOTRON_TOP_K} --max_tokens ${NEMOTRON_MAX_TOKENS}"
 }

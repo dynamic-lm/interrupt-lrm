@@ -107,12 +107,40 @@ def get_code_generation_messages_mistral(
     return messages
 
 
+def get_code_generation_messages_nemotron(
+    entry, custom_prompts, problem_field_name, starter_code_field_name
+):
+    prompt = "Here is a problem for which you need to generate/complete code:\n\n"
+    prompt += entry[problem_field_name] + "\n\n"
+    if entry[starter_code_field_name]:
+        prompt += f"{FORMATTING_MESSAGE_WITH_STARTER_CODE}\n"
+        prompt += f"```python\n{entry[starter_code_field_name]}\n```\n\n"
+    else:
+        prompt += f"{FORMATTING_WITHOUT_STARTER_CODE}\n\n"
+        prompt += "```python\n# YOUR CODE HERE\n```\n\n"
+    prompt = prompt.replace("    ", "\t")
+    prompt += (
+        "Please continue to complete the function with python programming language. "
+        "You are not allowed to modify the given code and do the completion only.\n\n"
+    )
+    prompt += "The solution should be in the following format:\n\n"
+    prompt += "```python\n# Your code here\n```\n\n"
+
+    system_prompt = "/think"
+    if custom_prompts is not None and custom_prompts.get("system_prompt", "") != "":
+        system_prompt += "\n" + custom_prompts["system_prompt"]
+    return [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": prompt},
+    ]
+
+
 def prompt_formatting_model(model_name, tokenizer, messages):
     if "qwen3" in model_name.lower():
         formatted_prompt = tokenizer.apply_chat_template(
             messages, tokenize=False, add_generation_prompt=True, enable_thinking=True
         )
-    elif "deepseek-r1" in model_name.lower():
+    elif "deepseek-r1" in model_name.lower() or "nemotron" in model_name.lower():
         formatted_prompt = tokenizer.apply_chat_template(
             messages, tokenize=False, add_generation_prompt=True
         )
@@ -141,7 +169,11 @@ def extract_reasoning_trace(output_text: str, model_name: str):
             reasoning_trace = output_text.split("<|end|>")[0]
         else:
             reasoning_trace = output_text
-    elif "qwen3" in model_name.lower() or "deepseek-r1" in model_name.lower():
+    elif (
+        "qwen3" in model_name.lower()
+        or "deepseek-r1" in model_name.lower()
+        or "nemotron" in model_name.lower()
+    ):
         if "</think>" in output_text:
             reasoning_trace = output_text.split("</think>")[0]
         else:
@@ -198,7 +230,8 @@ def truncate_reasoning_trace(model_name, reasoning_trace, tokenizer, interrupt_p
 
 def close_reasoning_trace(model_name, reasoning_trace, force_answer=False):
     assert any(
-        m in model_name.lower() for m in ["qwen3", "deepseek-r1", "gpt-oss", "mistral"]
+        m in model_name.lower()
+        for m in ["qwen3", "deepseek-r1", "gpt-oss", "mistral", "nemotron"]
     ), f"Model {model_name} not supported"
     if "qwen3" in model_name.lower() or "deepseek-r1" in model_name.lower():
         if force_answer:
@@ -217,12 +250,18 @@ def close_reasoning_trace(model_name, reasoning_trace, force_answer=False):
             reasoning_trace += "\n\n[/THINK]"
         else:
             reasoning_trace += "\n\n[/THINK]</s>"
+    elif "nemotron" in model_name.lower():
+        if force_answer:
+            reasoning_trace += "\n</think>"
+        else:
+            reasoning_trace += "\n</think><SPECIAL_12>"
     return reasoning_trace
 
 
 def open_close_reasoning_trace(model_name):
     assert any(
-        m in model_name.lower() for m in ["qwen3", "deepseek-r1", "gpt-oss", "mistral"]
+        m in model_name.lower()
+        for m in ["qwen3", "deepseek-r1", "gpt-oss", "mistral", "nemotron"]
     ), f"Model {model_name} not supported"
     if "qwen3" in model_name.lower() or "deepseek-r1" in model_name.lower():
         return "<think>\n\n</think>\n\n"
@@ -230,11 +269,14 @@ def open_close_reasoning_trace(model_name):
         return "<|channel|>analysis<|message|>\n<|end|><|start|>assistant<|channel|>final<|message|>"
     elif "mistral" in model_name.lower():
         return "[THINK]\n\n[/THINK]"
+    elif "nemotron" in model_name.lower():
+        return "<think>\n\n</think>"
 
 
 def format_user_turn(model_name, update_instructions):
     assert any(
-        m in model_name.lower() for m in ["qwen3", "deepseek-r1", "gpt-oss", "mistral"]
+        m in model_name.lower()
+        for m in ["qwen3", "deepseek-r1", "gpt-oss", "mistral", "nemotron"]
     ), f"Model {model_name} not supported"
     if "qwen3" in model_name.lower() or "deepseek-r1" in model_name.lower():
         user_turn = f"\n<|im_start|>user\n{update_instructions}\n<|im_end|>\n<|im_start|>assistant\n"
@@ -244,6 +286,11 @@ def format_user_turn(model_name, update_instructions):
         )
     elif "mistral" in model_name.lower():
         user_turn = f"[INST]{update_instructions}[/INST]"
+    elif "nemotron" in model_name.lower():
+        user_turn = (
+            f"<SPECIAL_11>User\n{update_instructions}\n"
+            "<SPECIAL_11>Assistant\n<think>\n"
+        )
     return user_turn
 
 
@@ -328,6 +375,21 @@ def get_math_messages_openaioss(ex, custom_prompts, mode, problem_field_name):
     return messages
 
 
+def get_math_messages_nemotron(ex, custom_prompts, mode, problem_field_name):
+    prompt = (
+        "Solve the following math problem. Make sure to put the answer "
+        "(and only answer) inside \\boxed{{}}.\n\n"
+        + ex[problem_field_name]
+    )
+    system_prompt = "/think"
+    if custom_prompts is not None and custom_prompts.get("system_prompt", "") != "":
+        system_prompt += "\n" + custom_prompts["system_prompt"]
+    return [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": prompt},
+    ]
+
+
 def format_math_initial_input_prompt(
     model_name, ex, custom_prompts, tokenizer, mode, problem_field_name="problem"
 ):
@@ -340,6 +402,10 @@ def format_math_initial_input_prompt(
         )
     elif "mistral" in model_name.lower():
         messages = get_math_messages_mistral(
+            ex, custom_prompts, mode, problem_field_name
+        )
+    elif "nemotron" in model_name.lower():
+        messages = get_math_messages_nemotron(
             ex, custom_prompts, mode, problem_field_name
         )
     else:
@@ -369,6 +435,10 @@ def format_code_generation_initial_input_prompt(
     elif "mistral" in model_name.lower():
         messages = get_code_generation_messages_mistral(
             ex, custom_prompts, model_name, problem_field_name, starter_code_field_name
+        )
+    elif "nemotron" in model_name.lower():
+        messages = get_code_generation_messages_nemotron(
+            ex, custom_prompts, problem_field_name, starter_code_field_name
         )
     else:
         raise ValueError(f"Model {model_name} not supported")

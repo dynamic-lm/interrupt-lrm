@@ -4,6 +4,8 @@
 
 **Paper:** [Are Large Reasoning Models Interruptible?](https://arxiv.org/abs/2510.11713)
 
+**Accepted at ICML 2026**
+
 **Authors:** Tsung-Han Wu*, Mihran Miroyan*, David M. Chan, Trevor Darrell, Narges Norouzi, Joseph E. Gonzalez
 
 **Additional resources:** [🤗 Dataset](https://huggingface.co/datasets/dynamic-lm/update-interrupt-benchmark), [💻 Project page](https://dynamic-lm.github.io/)
@@ -31,6 +33,14 @@ We found LRMs have three common failure modes: **reasoning leakage** can produce
 - **Installation:** `uv sync`
 - [vLLM](https://docs.vllm.ai/en/latest/) is used for inference; install the optional dependency with `uv sync --extra vllm`.
 - Environment variables (e.g., API keys) are loaded via `python-dotenv`.
+
+### Supported Models
+
+- GPT-OSS series
+- Qwen3 series
+- DeepSeek-R1 Distill Llama series
+- NVIDIA Nemotron 3 series
+- Mistral Magistral series
 
 ### Repository Layout
 | Directory | Functionality |
@@ -146,13 +156,11 @@ Arguments:
 ## Citation
 
 ```
-@misc{wu2025largereasoningmodelsinterruptible,
+@inproceedings{wu2026largereasoningmodelsinterruptible,
       title={Are Large Reasoning Models Interruptible?}, 
       author={Tsung-Han Wu and Mihran Miroyan and David M. Chan and Trevor Darrell and Narges Norouzi and Joseph E. Gonzalez},
-      year={2025},
-      eprint={2510.11713},
-      archivePrefix={arXiv},
-      primaryClass={cs.CL},
-      url={https://arxiv.org/abs/2510.11713}, 
+      booktitle={Forty-third International Conference on Machine Learning},
+      year={2026},
+      url={https://arxiv.org/abs/2510.11713},
 }
 ```

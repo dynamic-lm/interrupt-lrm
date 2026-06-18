@@ -55,6 +55,14 @@ def load_tokenizer_and_llm(args):
                 config_format="mistral",
                 load_format="mistral",
             )
+        elif "nemotron" in args.model_name.lower():
+            llm = LLM(
+                model=args.model_name,
+                tensor_parallel_size=args.tensor_parallel_size,
+                hf_overrides=hf_overrides,
+                mamba_ssm_cache_dtype="float32",
+                trust_remote_code=True,
+            )
         else:
             llm = LLM(
                 model=args.model_name,
@@ -69,6 +77,13 @@ def load_tokenizer_and_llm(args):
                 tokenizer_mode="mistral",
                 config_format="mistral",
                 load_format="mistral",
+            )
+        elif "nemotron" in args.model_name.lower():
+            llm = LLM(
+                model=args.model_name,
+                hf_overrides=hf_overrides,
+                mamba_ssm_cache_dtype="float32",
+                trust_remote_code=True,
             )
         else:
             llm = LLM(model=args.model_name, hf_overrides=hf_overrides)
